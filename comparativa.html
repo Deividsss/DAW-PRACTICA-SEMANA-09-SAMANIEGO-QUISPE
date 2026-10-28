@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paso 5 - Comparativa PHP vs JSP</title>
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f3f5f9;margin:0;padding:40px}
+    .card{max-width:980px;margin:auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+    h1{margin-top:0;color:#1f3a5f;font-size:24px}
+    p.sub{color:#555;margin-top:-6px}
+    table{width:100%;border-collapse:collapse;font-size:15px}
+    th,td{border:1px solid #d0d7e2;padding:10px;text-align:left;vertical-align:top}
+    th{background:#1f3a5f;color:#fff}
+    th.php{background:#777bb3} th.jsp{background:#d9534f}
+    tr:nth-child(even) td{background:#f7f9fc}
+    td:first-child{font-weight:600;width:16%}
+    tr.sep td{background:#e8edf5!important;font-weight:700;color:#1f3a5f}
+    .btn{display:inline-block;margin-top:20px;background:#1f6feb;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Paso 5: Comparación de arquitecturas PHP vs JSP</h1>
+    <p class="sub">Diferencias de ciclo de vida, gestión de memoria, despliegue y escalabilidad.</p>
+    <table>
+      <tr><th>Aspecto</th><th class="php">PHP (Apache + mod_php/FPM)</th><th class="jsp">JSP (Apache Tomcat)</th></tr>
+
+      <tr class="sep"><td colspan="3">1. Ciclo de vida</td></tr>
+      <tr><td>Modelo de ejecución</td><td>Interpretado. Cada petición ejecuta: Parse → Execute → Output, y el script termina.</td><td>El JSP se traduce a un Servlet, se compila y se instancia una sola vez. Luego atiende peticiones con <code>service()</code> hasta <code>destroy()</code>.</td></tr>
+      <tr><td>Primera petición</td><td>Rápida: solo se interpreta (con OPcache queda cacheado).</td><td>Más lenta: traducción y compilación. Las siguientes peticiones son muy rápidas.</td></tr>
+      <tr><td>Estado entre peticiones</td><td>Stateless (<code>$_SESSION</code> guardado en archivos del servidor).</td><td>Stateless (<code>HttpSession</code> guardada en memoria del contenedor).</td></tr>
+
+      <tr class="sep"><td colspan="3">2. Gestión de memoria</td></tr>
+      <tr><td>Memoria por petición</td><td>"Shared-nothing": todo se libera al terminar la petición.</td><td>El servlet permanece en memoria; los objetos los administra la JVM con recolector de basura (GC).</td></tr>
+      <tr><td>Concurrencia</td><td>Un proceso o worker por petición.</td><td>Una sola instancia del servlet atendida por múltiples hilos (threads); requiere código thread-safe.</td></tr>
+      <tr><td>Consumo</td><td>Bajo y predecible por petición.</td><td>Mayor base (JVM), pero eficiente bajo carga alta.</td></tr>
+
+      <tr class="sep"><td colspan="3">3. Despliegue</td></tr>
+      <tr><td>Cómo se despliega</td><td>Copiar archivos a <code>htdocs/lab09/</code>. Sin compilar ni reiniciar.</td><td>Copiar carpeta o <code>.war</code> a <code>webapps/lab09/</code>; Tomcat lo despliega solo. Se configura con <code>WEB-INF/web.xml</code>.</td></tr>
+      <tr><td>Requisitos</td><td>Apache + PHP (XAMPP).</td><td>JDK + servlet container (Tomcat).</td></tr>
+      <tr><td>Puerto en este lab</td><td>80</td><td>8080</td></tr>
+
+      <tr class="sep"><td colspan="3">4. Escalabilidad</td></tr>
+      <tr><td>Escalado horizontal</td><td>Muy sencillo: más servidores detrás de un balanceador (sesiones en Redis o BD).</td><td>Posible con clustering de Tomcat y replicación de sesiones, o balanceador con sesiones sticky.</td></tr>
+      <tr><td>Escalado vertical</td><td>Más workers (PHP-FPM) y RAM.</td><td>Más hilos y heap de la JVM.</td></tr>
+      <tr><td>Uso típico</td><td>Sitios y aplicaciones web rápidas de desarrollar.</td><td>Aplicaciones empresariales de gran tamaño.</td></tr>
+    </table>
+    <a class="btn" href="index.html">← Volver al formulario</a>
+  </div>
+</body>
+</html>
